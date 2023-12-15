@@ -1,0 +1,591 @@
+//Experiment no. 1 (runs)
+
+#include<iostream>
+using namespace std;
+
+class complex {
+    float x;
+    float y;
+
+public:
+    complex() {
+        x = 0;
+        y = 0;
+    }
+
+    complex operator+(complex);
+    complex operator*(complex);
+
+    friend istream& operator>>(istream& input, complex& t) {
+        cout << "Enter the real part of complex number: ";
+        cin >> t.x;
+        cout << "Enter the imaginary part of complex number: ";
+        cin >> t.y;
+        return input;
+    }
+
+    friend ostream& operator<<(ostream& output, const complex& t) {
+        output << t.x << "+" << t.y << "i\n";
+        return output;
+    }
+};
+
+complex complex::operator+(complex c) {
+    complex temp;
+    temp.x = x + c.x;
+    temp.y = y + c.y;
+    return temp;
+}
+
+complex complex::operator*(complex c) {
+    complex temp2;
+    temp2.x = (x * c.x) - (y * c.y);
+    temp2.y = (y * c.x) + (x * c.y);
+    return temp2;
+}
+
+int main() {
+    complex c1, c2, c3, c4;
+
+    cout << "Default constructor value:\n";
+    cout << c1;
+
+    cout << "\nEnter the 1st number:\n";
+    cin >> c1;
+
+    cout << "\nEnter the 2nd number:\n";
+    cin >> c2;
+
+    cout << "\nThe first number is: " << c1;
+    cout << "\nThe second number is: " << c2;
+
+    c3 = c1 + c2;
+    c4 = c1 * c2;
+
+    cout << "\nThe addition is: " << c3;
+    cout << "\nThe multiplication is: " << c4;
+
+    return 0;
+}
+
+
+
+
+
+
+
+//Experiment no. 2 (runs)
+
+
+#include <iostream>
+#include <cstring>
+
+class PersonAdditionalInfo {
+public:
+    char address[20], license[20], insurance[20];
+    long int contact;
+
+    PersonAdditionalInfo() {
+        strcpy(address, "XYZ");
+        strcpy(license, "XY-0000000000");
+        strcpy(insurance, "XY00000000X");
+        contact = 0;
+    }
+};
+
+class Person {
+public:
+    char name[20], dob[10], blood[10];
+    float ht, wt;
+    static int count; // Static variable
+    PersonAdditionalInfo pai;
+
+    Person() {
+        strcpy(name, "XYZ");
+        strcpy(dob, "dd/mm/yy");
+        strcpy(blood, "A+");
+        ht = 0;
+        wt = 0;
+        count++;
+    }
+
+    Person(const Person& pl) : pai(pl.pai) {
+        strcpy(name, pl.name);
+        strcpy(dob, pl.dob);
+        strcpy(blood, pl.blood);
+        ht = pl.ht;
+        wt = pl.wt;
+    }
+
+    ~Person() {
+        std::cout << "\nI am in Destructor\n";
+    }
+
+    static void showCount() {
+        std::cout << "\nNo of records count=" << count << "\n";
+    }
+
+    void getData(const char inputName[20]);
+    void display();
+};
+
+int Person::count = 0; // Static variable definition.
+
+void Person::getData(const char inputName[20]) {
+    strcpy(name, inputName);
+    std::cout << "\nEnter date of birth: ";
+    std::cin >> dob;
+    std::cout << "\nEnter blood group: ";
+    std::cin >> blood;
+    std::cout << "\nEnter height: ";
+    std::cin >> ht;
+    std::cout << "\nEnter weight: ";
+    std::cin >> wt;
+    std::cout << "\nEnter address: ";
+    std::cin >> pai.address;
+    std::cout << "\nEnter Licence number: ";
+    std::cin >> pai.license;
+    std::cout << "\nEnter Insurance policy number: ";
+    std::cin >> pai.insurance;
+    std::cout << "\nEnter Contact number: ";
+    std::cin >> pai.contact;
+}
+
+void Person::display() {
+    std::cout << name << "\t" << dob << "\t" << blood << "\t" << ht << "\t" << wt
+              << "\t" << pai.address << "\t" << pai.license << "\t" << pai.insurance
+              << "\t" << pai.contact << "\n";
+}
+
+int main() {
+    int n;
+    std::cout << "\nEnter how many records you want: ";
+    std::cin >> n;
+
+    Person *p3 = new Person[n]; // array of objects
+
+    char name[20];
+    int x = 0, ch;
+
+    do {
+        std::cout << "\nWelcome to Personal database system";
+        std::cout << "\n1. Enter the record";
+        std::cout << "\n2. Display the record";
+        std::cout << "\n3. Exit";
+        std::cin >> ch;
+
+        switch(ch) {
+            case 1:
+                std::cout << "\nEnter the Name: ";
+                std::cin >> name;
+                p3[x].getData(name);
+                Person::showCount(); // calls static function
+                x++;
+                break;
+
+            case 2:
+                std::cout << "\tName\tDob\tBlood\tHt\tWt\tAddress\tLicense\tInsurance\tContact\n";
+                for(int i = 0; i < n; i++) {
+                    p3[i].display(); // calls inline function
+                }
+                break;
+        }
+    } while (ch != 3);
+
+    delete[] p3; // dynamic memory de-allocation
+
+    return 0;
+}
+
+
+
+
+
+
+
+//Experiment no. 3 
+
+#include <iostream>
+#include <cstring>
+#include <exception>
+
+using namespace std;
+
+class publication {
+protected:
+    string title;
+    float price;
+
+public:
+    publication(string t = "No title", float p = 0.0) : title(t), price(p) {}
+};
+
+class books : public publication {
+    int pages;
+
+public:
+    books(string t = "No title", float p = 0.0, int pa = 0) : publication(t, p), pages(pa) {}
+
+    void getb() {
+        cout << "Enter the details of the book:" << endl;
+        cout << "Enter the title of the book:" << endl;
+        cin.ignore();
+        getline(cin, title);
+        cout << "Enter the price of the book:" << endl;
+        cin >> price;
+        cout << "Enter the pages of the book:" << endl;
+        cin >> pages;
+
+        try {
+            if (pages > 500 && pages < 1500) {
+                if (price > 100 && price < 2000) {
+                    displayb();
+                } else {
+                    throw pages;
+                }
+            } else {
+                throw pages;
+            }
+        } catch (int i) {
+            cout << "Caught exception in function of book" << endl;
+            cout << "You entered an invalid data" << endl;
+            title = "0";
+            price = 0.0;
+            pages = 0;
+            displayb();
+            throw;
+        }
+    }
+
+    void displayb() {
+        cout << "The book you entered is:" << endl << endl;
+        cout << "The entered title is: " << title << endl;
+        cout << "The entered price is: " << price << endl;
+        cout << "The entered pages are: " << pages << endl;
+    }
+};
+
+class tape : public publication {
+    float min;
+
+public:
+    tape(string t = "No title", float p = 0.0, float m = 0.00) : publication(t, p), min(m) {}
+
+    void gett() {
+        cout << "Enter the details of the tape:" << endl;
+        cout << "Enter the title of the tape:" << endl;
+        cin.ignore();
+        getline(cin, title);
+        cout << "Enter the price of the tape:" << endl;
+        cin >> price;
+        cout << "Enter the playing time (in minutes):" << endl;
+        cin >> min;
+
+        try {
+            if (min > 30.00 && min < 90.00) {
+                if (price > 500 && price < 1000) {
+                    displayt();
+                } else {
+                    throw price;
+                }
+            } else {
+                throw min;
+            }
+        } catch (float f) {
+            title = "No title";
+            price = 0.0;
+            cout << "Caught exception in the function of tape" << endl;
+            cout << "You entered an invalid data" << endl;
+            min = 0;
+            throw;
+        }
+    }
+
+    void displayt() {
+        cout << "The details of the tape you entered is:" << endl << endl;
+        cout << "The entered title is: " << title << endl;
+        cout << "The entered price is: " << price << endl;
+        cout << "The entered play time is: " << min << " minutes" << endl;
+    }
+};
+
+int main() {
+    books b;
+    tape t;
+    int choice;
+
+    cout << "Do you want to buy a book (Press 1) or a tape (Press 2): " << flush;
+    cin >> choice;
+
+    switch (choice) {
+    case 1:
+        try {
+            b.getb();
+        } catch (int i) {
+            cout << "Caught exception in int main()" << endl;
+        }
+        break;
+    case 2:
+        try {
+            t.gett();
+        } catch (float f) {
+            cout << "Caught exception in int main()" << endl;
+        }
+        break;
+    default:
+        cout << "Entered bad choice!! Try again!!" << endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+//Experiment no. 4 
+
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class Employee {
+    char name[20];
+    int emp_id;
+    float salary;
+
+public:
+    void accept() {
+        cout << "Enter name: ";
+        cin >> name;
+        cout << "Enter emp_id: ";
+        cin >> emp_id;
+        cout << "Enter salary: ";
+        cin >> salary;
+    }
+
+    void display() {
+        cout << "\n" << name << "\t" << emp_id << "\t" << salary;
+    }
+};
+
+int main() {
+    Employee o[5];
+    fstream file;
+    int i, n;
+
+    file.open("input.txt", ios::out | ios::binary);
+
+    cout << "\nHow many employee information do you want to store: ";
+    cin >> n;
+
+    cout << "\nEnter information for employees (Enter name, emp_id, salary): ";
+    for (i = 0; i < n; i++) {
+        cout << "\nEnter information for employee " << i + 1 << ": ";
+        o[i].accept();
+        file.write((char*)&o[i], sizeof(o[i]));
+    }
+
+    file.close();
+
+    file.open("input.txt", ios::in | ios::binary);
+
+    cout << "\nInformation of employees is as follows:\n";
+    for (i = 0; i < n; i++) {
+        file.read((char*)&o[i], sizeof(o[i]));
+        o[i].display();
+    }
+
+    file.close();
+
+    return 0;
+}
+
+
+
+
+
+//Experiment no. 5 (runs)
+
+
+#include<iostream>
+using namespace std;
+
+#define size 10
+
+int n;
+
+template<class T>
+void selection(T A[size]) {
+    int i, j, min;
+    T temp;
+
+    for (i = 0; i <= n - 2; i++) {
+        min = i;
+
+        for (j = i + 1; j <= n - 1; j++) {
+            if (A[j] < A[min])
+                min = j;
+        }
+
+        temp = A[i];
+        A[i] = A[min];
+        A[min] = temp;
+    }
+
+    cout << "\nSorted list: ";
+    for (i = 0; i < n; i++)
+        cout << A[i] << " ";
+}
+
+int main() {
+    int i, A[size];
+    float B[size];
+
+    cout << "Selection sort\n";
+    cout << "\nInteger Element\n";
+
+    cout << "Enter how many elements you want: ";
+    cin >> n;
+
+    cout << "\nEnter the Integer elements:\n";
+    for (i = 0; i < n; i++)
+        cin >> A[i];
+
+    selection(A);
+
+    cout << "\nFloat Element\n";
+
+    cout << "Enter how many elements you want: ";
+    cin >> n;
+
+    cout << "\nEnter float elements:\n";
+    for (i = 0; i < n; i++)
+        cin >> B[i];
+
+    selection(B);
+
+    return 0;
+}
+
+
+
+
+//Experiment no. 6 
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+struct PersonalRecord {
+    std::string name;
+    std::string dob;
+    std::string phoneNumber;
+};
+
+void displayRecord(const PersonalRecord& record) {
+    std::cout << "Name: " << record.name << "\tDOB: " << record.dob << "\tPhone: " << record.phoneNumber << std::endl;
+}
+
+PersonalRecord inputRecord() {
+    PersonalRecord record;
+    std::cout << "Enter Name: ";
+    std::getline(std::cin, record.name);
+    std::cout << "Enter DOB (YYYY-MM-DD): ";
+    std::getline(std::cin, record.dob);
+    std::cout << "Enter Phone Number: ";
+    std::getline(std::cin, record.phoneNumber);
+    return record;
+}
+
+int main() {
+    
+    std::vector<PersonalRecord> records;
+
+    size_t numRecords;
+    std::cout << "Enter the number of records: ";
+    std::cin >> numRecords;
+    std::cin.ignore(); 
+
+    for (size_t i = 0; i < numRecords; ++i) {
+        std::cout << "\nEnter details for record " << i + 1 << ":\n";
+        records.push_back(inputRecord());
+    }
+
+    std::cout << "\nOriginal Records:" << std::endl;
+    for (const auto& record : records) {
+        displayRecord(record);
+    }
+
+    std::sort(records.begin(), records.end(), [](const PersonalRecord& a, const PersonalRecord& b) {
+        return a.name < b.name;
+    });
+
+    std::cout << "\nSorted Records:" << std::endl;
+    for (const auto& record : records) {
+        displayRecord(record);
+    }
+
+    std::string searchName;
+    std::cout << "\nEnter a name to search: ";
+    std::getline(std::cin, searchName);
+
+    auto it = std::find_if(records.begin(), records.end(), [searchName](const PersonalRecord& record) {
+        return record.name == searchName;
+    });
+
+    if (it != records.end()) {
+        std::cout << "\nRecord found for " << searchName << ":" << std::endl;
+        displayRecord(*it);
+    } else {
+        std::cout << "\nRecord not found for " << searchName << std::endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+//Experiment no. 7
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+    map<string, int>country_db;
+
+    cout<<"India has population 393";
+    cout<<"USA has population 9293";
+    cout<<"Canada has population 393";
+    cout<<"Germany has population 9293";
+    cout<<"UK has population 393";
+    cout<<"Russia has population 9293";
+
+
+
+    country_db["India"] = 476;
+    country_db["USA"] = 78;
+    country_db["UK"] = 93;
+    country_db["Germany"]= 93;
+
+    string s;
+
+    cout << "Enter name of the state: ";
+    cin >> s;
+
+    // Check if the entered state name is present in the map
+    if (country_db.find(s) != country_db.end()) {
+        cout << "Country has a population of " << country_db[s] << endl;
+    } else {
+        cout << "Country not found in the database." << endl;
+    }
+
+    return 0;
+}
